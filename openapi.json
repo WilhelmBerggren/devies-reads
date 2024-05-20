@@ -1,0 +1,507 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "operationId": "AppController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAuthResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "AppController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAuthResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/is-logged-in": {
+      "get": {
+        "operationId": "AppController_isLoggedIn",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "operationId": "UsersController_findOne",
+        "summary": "Get one user",
+        "description": "The shelf contains the books the user have read, are currently reading or wants to read",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Users"]
+      }
+    },
+    "/users/{id}/shelf": {
+      "post": {
+        "operationId": "UsersController_addToShelf",
+        "summary": "Add shelf item",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShelfItem"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Users"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "UsersController_updateShelf",
+        "summary": "Update shelf item",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShelfItem"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Users"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/books": {
+      "post": {
+        "operationId": "BooksController_addBook",
+        "summary": "Add book",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddBookDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Books"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "BooksController_findAll",
+        "summary": "Get all books",
+        "description": "When a user adds the book to their shelf with one of the statuses haveRead, currentlyReading or wantToRead it increments the number here",
+        "parameters": [
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Sort by name, haveRead, currentlyReading or wantToRead",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BookDTO"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Books"]
+      }
+    },
+    "/books/{id}": {
+      "get": {
+        "operationId": "BooksController_findOne",
+        "summary": "Get one book",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Books"]
+      }
+    },
+    "/books/{id}/rate": {
+      "post": {
+        "operationId": "BooksController_rateBook",
+        "summary": "Rate book",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RateBookDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Books"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Devies Reads",
+    "description": "The API for the service Devies Reads. Use the register and login endpoints to acquire an access token. Then use it for all remaining PUT and POST endpoints.",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "Books",
+      "description": ""
+    },
+    {
+      "name": "Users",
+      "description": ""
+    }
+  ],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "UserAuthResponseDTO": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "accessToken": {
+            "type": "string"
+          }
+        },
+        "required": ["userId", "accessToken"]
+      },
+      "RegisterDTO": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": ["username", "password"]
+      },
+      "ShelfStatus": {
+        "type": "string",
+        "enum": ["haveRead", "currentlyReading", "wantToRead"]
+      },
+      "ShelfItem": {
+        "type": "object",
+        "properties": {
+          "bookId": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ShelfStatus"
+          }
+        },
+        "required": ["bookId", "status"]
+      },
+      "UserDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "shelf": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShelfItem"
+            }
+          }
+        },
+        "required": ["id", "username", "shelf"]
+      },
+      "AddBookDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "genre": {
+            "type": "string"
+          },
+          "coverUrl": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "genre", "coverUrl", "description"]
+      },
+      "BookDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "genre": {
+            "type": "string"
+          },
+          "coverUrl": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "averageRating": {
+            "type": "number"
+          },
+          "haveRead": {
+            "type": "number",
+            "description": "How many users have read the book"
+          },
+          "currentlyReading": {
+            "type": "number",
+            "description": "How many users are currently reading the book"
+          },
+          "wantToRead": {
+            "type": "number",
+            "description": "How many users want to read the book"
+          },
+          "userRating": {
+            "type": "number",
+            "description": "The authenticated user's rating"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "genre",
+          "coverUrl",
+          "description",
+          "haveRead",
+          "currentlyReading",
+          "wantToRead"
+        ]
+      },
+      "RateBookDTO": {
+        "type": "object",
+        "properties": {
+          "bookId": {
+            "type": "string"
+          },
+          "rating": {
+            "type": "number"
+          }
+        },
+        "required": ["bookId", "rating"]
+      }
+    }
+  }
+}
