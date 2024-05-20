@@ -1,14 +1,17 @@
 import { getClient } from "@/client";
 import { Book } from "@/components/Book";
 import { sortBooks } from "@/utils/sort-books";
+import Link from "next/link";
 import { Suspense } from "react";
 
 async function SearchContents({
   searchTerm,
   isLoggedIn,
+  genre,
 }: {
   searchTerm: string;
   isLoggedIn: boolean;
+  genre?: string;
 }) {
   const { success, books } = await getClient()
     .GET("/books", { signal: AbortSignal.timeout(5000) })
@@ -17,17 +20,26 @@ async function SearchContents({
         return { success: false, books: [] };
       }
 
-      const sorted = sortBooks(response.data, searchTerm);
-
-      return { success: true, books: sorted };
+      return { success: true, books: response.data };
     })
     .catch(() => ({ success: false, books: [] }));
 
+  const sortedBooks = sortBooks(books, searchTerm, genre);
+
+  const genres = [...new Set(books.map((book) => book.genre))];
+
   return (
-    <>
-      {books && books.length > 0 ? (
+    <div>
+      <div className="flex flex-row gap-2 underline">
+        {genres.map((genre) => (
+          <Link key={genre} href={`/search/${searchTerm}?genre=${genre}`}>
+            {genre}
+          </Link>
+        ))}
+      </div>
+      {sortedBooks && sortedBooks.length > 0 ? (
         <ul className="flex flex-col gap-2">
-          {books?.map(({ book }) => (
+          {sortedBooks?.map(({ book }) => (
             <li key={book.id}>
               <Book {...book} isLoggedIn={isLoggedIn} />
             </li>
@@ -36,18 +48,22 @@ async function SearchContents({
       ) : (
         <p>{success ? "No results found" : "Something went wrong"}</p>
       )}
-    </>
+    </div>
   );
 }
 
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: { searchTerm: string };
+  searchParams: { genre?: string };
 }) {
   const isLoggedInResponse = await getClient().GET("/is-logged-in", {
     parseAs: "text",
   });
+
+  const genre = searchParams?.genre ?? undefined;
 
   const isLoggedIn = isLoggedInResponse.data === "Yes";
 
@@ -56,6 +72,7 @@ export default async function Page({
       <h1>Search results for: {params.searchTerm}</h1>
       <Suspense fallback={<p>Loading...</p>}>
         <SearchContents
+          genre={genre}
           isLoggedIn={isLoggedIn}
           searchTerm={params?.searchTerm}
         />

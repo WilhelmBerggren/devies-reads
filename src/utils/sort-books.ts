@@ -1,7 +1,6 @@
-export function sortBooks<Book extends { name: string; description: string }>(
-  books: Book[],
-  searchTerm: string
-) {
+export function sortBooks<
+  Book extends { name: string; description: string; genre: string }
+>(books: Book[], searchTerm: string, genre?: string) {
   const withSearchScores = books.map((book) => ({
     nameMatches: book.name.toLowerCase().includes(searchTerm.toLowerCase()),
     descriptionMatches: book.description
@@ -11,7 +10,10 @@ export function sortBooks<Book extends { name: string; description: string }>(
   }));
 
   const filtered = withSearchScores
-    ?.filter((scores) => scores.nameMatches || scores.descriptionMatches)
+    .filter((scores) =>
+      genre ? scores.book.genre?.toLowerCase() === genre?.toLowerCase() : true
+    )
+    .filter((scores) => scores.nameMatches || scores.descriptionMatches)
     .sort((a, b) => {
       const scoreA = Number(b.nameMatches) + Number(b.descriptionMatches);
       const scoreB = Number(a.nameMatches) + Number(a.descriptionMatches);

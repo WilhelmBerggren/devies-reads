@@ -12,6 +12,7 @@ export function Book({
   isLoggedIn,
   status,
   userRating,
+  genre,
 }: {
   id: string;
   name: string;
@@ -20,6 +21,7 @@ export function Book({
   isLoggedIn: boolean;
   status?: string;
   userRating?: number;
+  genre: string;
 }) {
   const [formStatus, formAction] = useFormState(bookAction, { message: "" });
   return (
@@ -29,6 +31,7 @@ export function Book({
         <p className="text-gray-300">
           {description.slice(0, 30) + (description.length >= 30 ? "..." : "")}
         </p>
+        <p>{genre}</p>
       </div>
       <div className="flex flex-row justify-end items-center gap-2 w-full">
         {isLoggedIn && (
