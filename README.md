@@ -1,6 +1,6 @@
 # Devies Reads
 
-This is an example Next.js application which consumes an OpenAPI API
+This is an example Next.js application which consumes an OpenAPI API. Recommended effort was 4 hours.
 
 It uses [openapi-typescript](https://github.com/drwpow/openapi-typescript) to generate typescript bindings from the OpenAPI Schema.
 
